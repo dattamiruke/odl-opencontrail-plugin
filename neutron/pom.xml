@@ -40,7 +40,6 @@
                     <instructions>
                     <Import-Package>
                             org.opendaylight.controller.networkconfig.neutron,
-                            org.opendaylight.oc.plugin,
                             org.opendaylight.controller.sal.binding.api,
                             org.apache.felix.dm,
                             org.slf4j,
