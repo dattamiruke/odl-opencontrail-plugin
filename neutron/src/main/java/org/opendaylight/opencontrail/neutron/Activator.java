@@ -2,7 +2,7 @@
  * Copyright (C) 2014 Juniper Networks, Inc.
  */
 
-package org.opendaylight.oc.neutron;
+package org.opendaylight.opencontrail.neutron;
 
 import net.juniper.contrail.api.ApiConnector;
 import net.juniper.contrail.api.ApiConnectorFactory;
@@ -14,7 +14,7 @@ import org.opendaylight.controller.sal.core.ComponentActivatorAbstractBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * OSGi bundle activator for the OC Neutron Interface.
+ * OSGi bundle activator for the opencontrail Neutron Interface.
  */
 public class Activator extends ComponentActivatorAbstractBase {
     static ApiConnector apiConnector=null;
@@ -26,16 +26,18 @@ public class Activator extends ComponentActivatorAbstractBase {
      */
     @Override
     public void init() {
-        LOGGER.info("OC Plugin service Registered");
+        LOGGER.info("opencontrail Plugin service Registered");
         apiConnector =getApiConnection();
     }
 
     /**
      * Function called to get APIConnector object.
+     * porperties must be defined in opendaylight configuration folder inside config.ini
+     * at opendaylight/distribution/opendaylight/src/main/resources/configuration/config.ini
      */
     public ApiConnector getApiConnection(){
-        String ipAddress=System.getProperty("contrail.apiserver.ipaddress");
-        String port=System.getProperty("contrail.apiserver.port");
+        String ipAddress=System.getProperty("opencontrail.apiserver.ipaddress");
+        String port=System.getProperty("opencontrail.apiserver.port");
         int portNumber=Integer.parseInt(port);
         apiConnector = ApiConnectorFactory.build(ipAddress, portNumber);
         return apiConnector;

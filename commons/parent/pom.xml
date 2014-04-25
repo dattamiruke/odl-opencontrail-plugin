@@ -9,8 +9,8 @@
     <artifactId>commons.opendaylight</artifactId>
     <version>1.4.1</version>
   </parent>
-  <groupId>org.opendaylight.oc</groupId>
-  <artifactId>commons.oc</artifactId>
+  <groupId>org.opendaylight.opencontrail</groupId>
+  <artifactId>commons.opencontrail</artifactId>
   <version>1.4.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 

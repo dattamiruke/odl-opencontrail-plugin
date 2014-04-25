@@ -1,16 +1,13 @@
-package org.opendaylight.oc.neutron;
+package org.opendaylight.opencontrail.neutron;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
-
 import net.juniper.contrail.api.ApiConnector;
 import net.juniper.contrail.api.types.VirtualNetwork;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
