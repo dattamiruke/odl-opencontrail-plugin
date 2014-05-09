@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2014 Juniper Networks, Inc.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ */
 
 package org.opendaylight.opencontrail.neutron;
 
@@ -30,7 +38,7 @@ public class SubnetHandler implements INeutronSubnetAware {
    * subnet can be created and then creates the subnet.
    *
    * @param subnet
-   *            An instance of proposed new Neutron Subnet object.
+   *            An instance of new Neutron Subnet object.
    *
    * @return A HTTP status code to the creation request.
    **/
@@ -42,19 +50,19 @@ public class SubnetHandler implements INeutronSubnetAware {
       if(subnet==null) {
           LOGGER.error("Neutron Subnet can't be null..");
           return HttpURLConnection.HTTP_BAD_REQUEST;
-      }
+          }
 
       try {
           virtualnetwork=getNetwork(subnet);
-      } catch (IOException e) {
-          LOGGER.error("Exception :     "+e);
-          return HttpURLConnection.HTTP_INTERNAL_ERROR;
-      }
+          } catch (IOException e) {
+              LOGGER.error("Exception :     "+e);
+              return HttpURLConnection.HTTP_INTERNAL_ERROR;
+              }
 
       if(virtualnetwork==null) {
           LOGGER.error("No network exists for the specified UUID...");
           return HttpURLConnection.HTTP_FORBIDDEN;
-      }
+          }
       else {
           try {
               List<ObjectReference <VnSubnetsType>> ipamRefs = virtualnetwork.getNetworkIpam();
@@ -64,24 +72,26 @@ public class SubnetHandler implements INeutronSubnetAware {
                       return result;
                       }
                   }
-          } catch (Exception e) {
+              } catch (Exception e) {
                   LOGGER.error("Exception :     "+e);
                   return HttpURLConnection.HTTP_INTERNAL_ERROR;
-          }
+                  }
           try {
               return createSubnet(subnet,virtualnetwork);
-          } catch(IOException ie) {
+              }
+          catch(IOException ie) {
               LOGGER.error("IOException:     "+ie);
               return HttpURLConnection.HTTP_INTERNAL_ERROR;
-          } catch(Exception e) {
+              }
+          catch(Exception e) {
               LOGGER.error("Exception:     "+e);
               return HttpURLConnection.HTTP_INTERNAL_ERROR;
+              }
           }
       }
-  }
 
   private int subnetExists(List<ObjectReference <VnSubnetsType>> ipamRefs,NeutronSubnet subnet) {
-     for (ObjectReference <VnSubnetsType> ref : ipamRefs) {
+      for (ObjectReference <VnSubnetsType> ref : ipamRefs) {
           VnSubnetsType vnSubnetsType = ref.getAttr();
           if(vnSubnetsType != null) {
               List<VnSubnetsType.IpamSubnetType> subnets = vnSubnetsType.getIpamSubnets();
@@ -96,13 +106,13 @@ public class SubnetHandler implements INeutronSubnetAware {
                       if(doesSubnetExist) {
                           LOGGER.error("The subnet already exists..");
                           return HttpURLConnection.HTTP_FORBIDDEN;
+                          }
                       }
-                   }
-               }
+                  }
+              }
           }
+      return 0;
       }
-  return 0;
-  }
 
 
   /**
@@ -128,14 +138,17 @@ public class SubnetHandler implements INeutronSubnetAware {
                           if(doesSubnetExist) {
                               LOGGER.info("Subnet creation verified...");
                               }
+                          else{
+                              LOGGER.info("Subnet creation failed...");
+                          }
                           }
                       }
                   }
               }
           } catch (Exception e) {
               LOGGER.error("Exception :     "+e);
-          }
-  }
+              }
+      }
 
 
   /**
@@ -155,12 +168,12 @@ public class SubnetHandler implements INeutronSubnetAware {
       if(!subnetCreate) {
           LOGGER.warn("Subnet creation failed..");
           return HttpURLConnection.HTTP_INTERNAL_ERROR;
-      }
+          }
       else {
-          LOGGER.info("Subnet " + subnet.getCidr() + "sucessfully added to the network having UUID : " + virtualnetwork.getUuid() );
+          LOGGER.info("Subnet " + subnet.getCidr() + "  sucessfully added to the network having UUID : " + virtualnetwork.getUuid() );
           return HttpURLConnection.HTTP_OK;
+          }
       }
-  }
 
   /**
    * Invoked to add the NeutronSubnet properties to the virtualNetwork object.
@@ -178,29 +191,31 @@ public class SubnetHandler implements INeutronSubnetAware {
        VnSubnetsType vnSubnetsType=new VnSubnetsType();
        SubnetType subnetType = new SubnetType();
 
-       try {
-           ipPrefix=getIpPrefix(subnet);
-           // Find default-network-ipam
-           String ipamId = apiConnector.findByName(NetworkIpam.class, null, "default-network-ipam");
-           ipam = (NetworkIpam)apiConnector.findById(NetworkIpam.class, ipamId);
-       } catch (IOException ex) {
-            LOGGER.error("IOException :    "+ex);
-       } catch (Exception ex) {
-            LOGGER.error("Exception :   "+ex);
+   try {
+       ipPrefix=getIpPrefix(subnet);
+       //   Find default-network-ipam
+       String ipamId = apiConnector.findByName(NetworkIpam.class, null, "default-network-ipam");
+       ipam = (NetworkIpam)apiConnector.findById(NetworkIpam.class, ipamId);
        }
-       if(ipPrefix != null) {
-           subnetType.setIpPrefix(ipPrefix[0]);
-           subnetType.setIpPrefixLen(Integer.valueOf(ipPrefix[1]));
-           if(vn.getNetworkIpam() !=null) {
-              for (ObjectReference <VnSubnetsType> ref : vn.getNetworkIpam()) {
-                  vnSubnetsType = ref.getAttr();
-              }
+   catch (IOException ex) {
+       LOGGER.error("IOException :    "+ex);
+       }
+   catch (Exception ex) {
+       LOGGER.error("Exception :   "+ex);
+       }
+   if(ipPrefix != null) {
+       subnetType.setIpPrefix(ipPrefix[0]);
+       subnetType.setIpPrefixLen(Integer.valueOf(ipPrefix[1]));
+       if(vn.getNetworkIpam() !=null) {
+           for (ObjectReference <VnSubnetsType> ref : vn.getNetworkIpam()) {
+               vnSubnetsType = ref.getAttr();
+               }
            }
        vnSubnetsType.addIpamSubnets(subnetType, subnet.getGatewayIP());
        vn.setNetworkIpam(ipam, vnSubnetsType);
        }
-  return vn;
-  }
+   return vn;
+   }
 
 
   /**
@@ -217,16 +232,16 @@ public class SubnetHandler implements INeutronSubnetAware {
        String cidr = subnet.getCidr();
        if (cidr.contains("/")) {
            ipPrefix = cidr.split("/");
-       } else {
-            throw new IllegalArgumentException("String " + cidr + " not in correct format..");
+           } else {
+               throw new IllegalArgumentException("String " + cidr + " not in correct format..");
+               }
+       return ipPrefix;
        }
-   return ipPrefix;
-   }
 
 
 /**
  * Invoked when a subnet update is requested to indicate if the specified
- * subnet can be changed using the specified delta.
+ * subnet can be changed using the specified delta and then update the subnet.
  * @param delta
  *            Updates to the subnet object using patch semantics.
  * @param original
@@ -236,7 +251,7 @@ public class SubnetHandler implements INeutronSubnetAware {
    @Override
    public int canUpdateSubnet(NeutronSubnet delta, NeutronSubnet original) {
        return HttpURLConnection.HTTP_CREATED;
-   }
+       }
 
 
 /**
@@ -247,7 +262,7 @@ public class SubnetHandler implements INeutronSubnetAware {
   @Override
   public void neutronSubnetUpdated(NeutronSubnet subnet) {
       // TODO Auto-generated method stub
-  }
+      }
 
   /**
    * Invoked when a subnet deletion is requested to indicate if the specified
@@ -259,8 +274,8 @@ public class SubnetHandler implements INeutronSubnetAware {
    @Override
    public int canDeleteSubnet(NeutronSubnet subnet) {
        // TODO Auto-generated method stub
-      return HttpURLConnection.HTTP_CREATED;
-   }
+       return HttpURLConnection.HTTP_CREATED;
+       }
 
 
   /**
@@ -271,7 +286,7 @@ public class SubnetHandler implements INeutronSubnetAware {
    @Override
    public void neutronSubnetDeleted(NeutronSubnet subnet) {
        // TODO Auto-generated method stub
-   }
+       }
 
 
 
