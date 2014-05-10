@@ -1,3 +1,12 @@
+/*
+ * Copyright (C) 2014 Juniper Networks, Inc.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ */
+
 package org.opendaylight.opencontrail.neutron;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -43,7 +52,6 @@ public class SubnetHandlerTest {
     }
 
     /* dummy params for Neutron Subnet  */
-
     public NeutronSubnet defaultSubnetObject(){
         NeutronSubnet subnet = new NeutronSubnet();
         subnet.setNetworkUUID("6b9570f2-17b1-4fc399ec-1b7f7778a29b");
@@ -59,15 +67,6 @@ public class SubnetHandlerTest {
         Activator.apiConnector = mockedApiConnector;
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, subnetHandler.canCreateSubnet(null));
     }
-
-
-    /*  Test method to check if Api server is available */
-    @Test
-    public void testcanCreateSubnetApiConnectorNull() {
-        NeutronSubnet neutronSubnet = defaultSubnetObject();
-        assertEquals(HttpURLConnection.HTTP_UNAVAILABLE, subnetHandler.canCreateSubnet(neutronSubnet));
-    }
-
 
     /* Test method to check if virtual network is null */
     @Test
@@ -104,7 +103,6 @@ public class SubnetHandlerTest {
 
 
     /* Test method to check if subnet already exists  */
-
     @Test
     public void testCanCreateSubnetExists() throws IOException {
         Activator.apiConnector = mockedApiConnector;
