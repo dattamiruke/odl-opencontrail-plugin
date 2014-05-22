@@ -6,13 +6,13 @@
   </prerequisites>
 
   <parent>
-    <groupId>org.opendaylight.oc</groupId>
-    <artifactId>commons.oc</artifactId>
+    <groupId>org.opendaylight.opencontrail</groupId>
+    <artifactId>commons.opencontrail</artifactId>
     <version>1.4.2-SNAPSHOT</version>
     <relativePath>commons/parent</relativePath>
   </parent>
-  <groupId>org.opendaylight.oc</groupId>
-  <artifactId>oc.project</artifactId>
+  <groupId>org.opendaylight.opencontrail</groupId>
+  <artifactId>opencontrail.project</artifactId>
   <version>0.4.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
